@@ -1,0 +1,246 @@
+====================================================================================================================================
+                                                    Criar ambiente virtual
+
+python -m venv env
+
+iniciando o ambiente virtual
+
+env\Scripts\activate.bat
+
+====================================================================================================================================
+                                                            Django
+
+Instalar o Django: pip install django==2.2.3
+
+Criando um projeto django usando o "." para não ter tres niveis de pasta com mesmo nome: 
+    django-admin startproject nomeProjeto .
+
+o arquivo manage.py é muito importante para fazer os comandos no django
+
+Siginificados dos arquivos que vem dentro da pasta nomeProjeto:
+    __init__.py: serve para dizer que é um pacote python
+    settings.py: é um dos arquivos mais importantes do projeto pois nele estão todas as configurações de seções do site instados
+    urls.py: é onde são cadastrados os caminhos das seções criadas
+    wsgi: está relacionado com servidor web
+
+Iniciando o servidor: django manage.py runserver
+Iniciando o servidor na porta 8080: django manage.py runserver 8080
+
+====================================================================================================================================
+                                                        Criando um novo app
+
+Criando uma nova seção ou um novo app: python manage.py startapp nomeApp
+
+Dentro da pasta nomeApp siginifiacdos dos arquivos e pasta:
+    migrations está relacionada com base de dados
+    admin.py: serve para adicionar a parte administraticva do app
+    app.py: serve para registrar o nomeApp no arquivo settings do nomeProjeto
+    models.py: é onde se trabalha com as bases de dos
+    tests.py: são pra testes automatizados
+
+====================================================================================================================================
+                                                        Registrando o novo app
+
+Ao Criar um novo app é necessário registra-lo:
+    * No arquivo settings.py do nomeProjeto dentro da lista ISTALLED_APPS adicionar o nome e a classe do novo app que pode ser acessado no arquivo apps.py do nomeApp: 
+        'nomeApp.apps.NomeAppConfig',
+
+    * No arquivo urls.py do nomeProjeto 
+        # adicionar um: import include
+        # adicionar uma nova path: 
+            path('nomeApp/', include('nomeApp.urls')),
+
+    * criar o arquivo urls.py no nomeApp com o conteúdo:
+        from django.urls import path
+        from . import views # o ponto sisginifica que está pegando a pasta nomeApp
+
+        urlpatterns = [
+            path('', views.nomeMetodo, name='nomeMetodo')
+        ]
+    * no arquivo views.py do nomeApp: criar o método  que retorna um html: 
+        def nomeMetodo(request):
+            HttpResponse('Olá mundo!')
+
+No caso de usar paginas html no nomeApp:
+    * criar uma pasta da seguinte maneira: 
+        templates
+            nomeApp
+                index.html
+
+    * seguir os passos anteriores para registrar as urls e o que muda é só a forma de escrever o método no arquivo niews do nomeApp:
+        def metodo(request):
+            return render(request, 'nomeApp/index.html')
+
+
+====================================================================================================================================
+                                        Criando um arquivo html comum a todas as páginas do site
+
+Dentro da pasta nomeProjeto procurar pelo arquivo settings.py  e adicionar na lista o caminho onde fica o arquivo html base:
+ * Na lista TEMPLATES 
+                'DIRS':[os.path.join(BASE_DIR, 'templates')]
+ * Ciar o diretório: templates
+ * Criar um arquivo html no diretório criado: base.html
+ * dentro do arquivo html, criar blocos que servem como molde para entrada dos conteúdos dos apps:
+    <title>{%block 'titulo'%}{%endblock%}</title>
+
+    <body>{%block 'conteudo'%}{%endblock%}</body>
+
+ * no arquivo html especificio do app adicionar os blocos herdando do arquivo html base comum a todos os outros:
+    {%extends 'base.html'%}
+    
+    {%block 'titulo'%} Esse é o título da página{%endblock%}
+
+    {%block 'conteudo'%}
+    <h1>Conteúdo da página</h1>
+    {%endblock%}
+
+====================================================================================================================================
+                                                        Página inicial
+
+Forma 1, criar a home sem criar um app específico pra ela:
+    * Criar um arquivo views.py dentro da pasta nomeProjeto e preencher o mesmo da mesama maneira que os outros apps com o retorno:
+        from django.shortcuts import render
+
+        def index(request):
+            return render(requst, 'home/index.html')
+
+    * dentro da pasta paginas onde fica o html base, criar uma pasta:
+        home
+            index.html
+        
+
+    Dentro do arquivo urls.py da pasta nomeProjeto, adicionar um import e adicionar uma nova url no topo de todas as outras:
+
+        from . import views 
+
+        path('', views.index),
+
+Forma 2, criar um app home:
+    * criar um app home como os apps criados nos exeplos anteriores
+    * criar o html especifico da pagina home como os apps anteriores
+    * registar normalmente o app normamente no arquvio settings.py na pasta nomeProjeto
+    * no arquivo urls.py da pasta nomeProjeto, adicionar um import e uma url no topo das já existentes:
+        from home import views
+
+        path('', views.index),
+
+====================================================================================================================================
+                                                      Arquivos estáticos
+Forma 1:
+    * Criar uma pasta static dentro do nomeApp e transfirir todos os arquivos de vendor bootstrap (css, js, img) pra dentro dela:
+        nomeApp 
+            static
+                nomeApp
+                    vendor
+                        bootstrap
+                        jquery
+    * no html base, usar uma tag para carregar os arquivos estaticos
+        {% load static %}
+
+    * Decorar todos os links estaticos da pagina como no exemplo:
+        {% static 'nomeApp/...'%}
+
+Forma 2:
+    * Criar uma pasta static junto com a pasta templates e transfirir todos os arquivos de vendor bootstrap (css, js, img) pra dentro dela: 
+            static
+                vendor
+                    bootstrap
+                    jquery
+    * no html base, usar uma tag para carregar os arquivos estaticos
+        {% load static %}
+
+    * Decorar todos os links estaticos da pagina como no exemplo:
+        "{% static '...'%}"
+        "{% static 'vendor/bootstrap/css/bootstrap.min.css' %}"
+
+    * no final arquivo settings.py da pasta nomeProjeto adicionar:
+        STATICFILES_DIRS = [
+            os.path.join(BASE_DIR, 'templates/static')
+        ]
+
+====================================================================================================================================
+                                                                Links dinamicos
+
+* no arquivo urls.py da pasta nomeApp em cada patch() deve se ter o parametro nomeado name='nomeLink' para funcionar dinamicamente dentro dos arquivos html
+    path('', views.index, name='index'), # se não funcionar use:
+        from produtos import views
+
+        path('produtos/', views.nomeMetodo, name="produtos"),
+
+* no arquivo html, trocar os links estaticos "/nomeLink" para {% url 'nomeLink' %}:
+    "/" "{% url 'index' %}"
+
+====================================================================================================================================
+                                                Separando a pagina base html em modulos
+
+
+* dentro da página templates criar uma pasta:
+    parciais
+        _head.html
+        _nav.html
+se algum dos arquivos acima tiver links estaticos de midia é necessário usar o bloco de load static
+
+* no arquivo html que usa os modulos, importar os módulos:
+    {% include 'parciais/_head.html' %}
+    
+    {% include 'parciais/_nav.html' %}
+
+
+=====================================================================================================================================
+                                                    Migrações e banco de dados
+
+* No arquivo models.py do nomeProjeto:
+    criar as classes que representam as tabelas da base de dados, exemplo:
+        
+        from django.db import models
+        from django.utils import timezone
+
+        class Categoria(models.Model):
+            nome = models.CharField(max_length=255)
+
+            def __str__(self):
+                return self.nome
+
+        class Contato(models.Model):
+            nome = models.CharField(max_length=150)
+            sobrenome = models.CharField(max_length=255, blank=True)
+            telefone = models.CharField(max_length=255)
+            email = models.CharField(max_length=255, blank=True)
+            data_criacao = models.DateTimeField(default=timezone.now)
+            descricao = models.TextField(blank=True)
+            categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING)
+
+            def __str__(self):  # usando o nome como campo principal. Esse retorno deixa o nome da categoria mais bonito no painel admin
+                return self.nome
+
+
+
+* passar o comando para fazer a Migração
+    python manage.py makemigrations
+
+* passar o comando para atualizar a base de dados:
+    python manag.py migrate
+
+==========================================================================================================================================
+                                                        Parte administrativa 
+
+* Criando um usuario admin
+    python manage.py createsuperuser
+
+* registrando os models no arquivo admin.py do nomeApp:
+    from django.contrib import admin
+    from .models import Categoria, Contato
+
+    class ContatoAdmin(admin.ModelAdmin): # informações especiais no painel administrativo
+        list_display = ('id', 'nome', 'sobrenome', 'telefone', 'email', 'data_criacao', 'categoria') # lista de atributos que vão aparecer por linha de registrando
+        list_display_links = ('id', 'nome', 'sobrenome') # onde vão aparecer links clicáveis para editar um registro
+        list_filter = ('nome', 'sobrenome') # campos para ordenação e filtagem
+        list_per_page = 10 # número de resultados por página
+        search_fields = ('nome', 'sobrenome', 'telefone') # eses campos servem para fazer busca de registros no campo de pesquisa da parte administrativa
+
+    admin.site.register(Categoria)
+    admin.site.register(Contato)
+
+
+
+
