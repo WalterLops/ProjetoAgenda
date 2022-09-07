@@ -28,6 +28,7 @@ def info_contato(request, id_contato):
     return render(request, 'contatos/info_contato.html', {
         'contato':contato
     })
+    
 
 def busca(request):
     termo = request.GET.get('termo')

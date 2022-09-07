@@ -5,10 +5,9 @@
 
 .img{
     position: relative;
-    width: 100%;
-    max-width: 600px;
     margin-top: 110px;
     border-color: black;
     border-style: solid;
-    border-radius: 2%;
+    size: 350px, 350px;
+    border-radius: 50%;
 }

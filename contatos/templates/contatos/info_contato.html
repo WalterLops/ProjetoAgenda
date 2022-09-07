@@ -35,9 +35,15 @@
         </div>
     </div>
 
-    <div>
-        <img src="{% static 'AmandaSeyfried.jpg' %}" class="img" alt="" width="400" height="400">
-    </div>
+    {% if contato.foto %}
+        <div>
+            <img src="{{ contato.foto.url }}" class="img" alt="" width="300" height="300">
+        </div>
+    {% else %}
+        <div>
+            <img src="{% static 'profile.jpg' %}" class="img" alt="" width="300" height="300">
+        </div>
+    {% endif %}
 
 </div>
 
