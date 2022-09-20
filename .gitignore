@@ -1,0 +1,5 @@
+*.json
+virtual
+*db
+dados
+Django
