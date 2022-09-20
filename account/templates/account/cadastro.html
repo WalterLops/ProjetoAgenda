@@ -8,23 +8,33 @@
     {% csrf_token %}
 
     <div class="form-group">
-      <label>Nome</label>
-      <input type="text" name="nome" class="form-control" placeholder="Digite seu nome">
+      <label>Nome *</label>
+      <input type="text" name="nome" value="{{ request.POST.nome }}" class="form-control" placeholder="Digite seu nome">
     </div>
 
     <div class="form-group">
-        <label>Sobrenome</label>
-        <input type="text" name="sobrenome" class="form-control" placeholder="Digite seu sobrenome">
+        <label>Sobrenome *</label>
+        <input type="text" name="sobrenome" value="{{ request.POST.sobrenome }}" class="form-control" placeholder="Digite seu sobrenome">
     </div>
     
     <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="email" class="form-control" placeholder="Digite seu email">
+        <label>Email *</label>
+        <input type="email" name="email" value="{{ request.POST.email }}" class="form-control" placeholder="Digite seu email">
     </div>
 
     <div class="form-group">
-        <label>Telefone</label>
-        <input type="text" name="telefone" class="form-control" placeholder="Digite seu telefone">
+        <label>Usuário *</label>
+        <input type="text" name="usuario" value="{{ request.POST.usuario }}" class="form-control" placeholder="Digite seu usuário">
+    </div>
+
+    <div class="form-group">
+        <label>Senha *</label>
+        <input type="password" name="senha" class="form-control" placeholder="Digite sua senha">
+    </div>
+
+    <div class="form-group">
+        <label>Confirme a sua senha *</label>
+        <input type="password" name="senha2"  class="form-control" placeholder="Confirme sua senha">
     </div>
     
     <button type="submit" class="btn btn-primary">Salvar</button>

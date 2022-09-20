@@ -6,8 +6,7 @@
 .img{
     position: relative;
     margin-top: 110px;
-    border-color: black;
-    border-style: solid;
-    size: 350px, 350px;
+    border: none;
+    size: 50%, 50%;
     border-radius: 50%;
 }
