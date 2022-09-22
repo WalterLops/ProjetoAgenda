@@ -1,1 +1,11 @@
 {% extends 'contatos/index.html'%}
+
+{% if request.GET.termo != '' %}
+
+    {% block 'titulo' %} {{request.GET.termo}} | {% endblock %}
+
+{% else %}
+
+{% block 'titulo' %} Busca | {% endblock %}
+
+{% endif %}

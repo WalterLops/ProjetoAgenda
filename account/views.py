@@ -26,7 +26,7 @@ def login (request):
     
 def logout(request):
     auth.logout(request)
-    return render(request, 'account/login.html')
+    return redirect('dashboard')
 
 def cadastro (request): 
     if request.method != 'POST': # se nada for postado
