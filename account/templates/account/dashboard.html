@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{%block 'titulo'%} DashBoard {%endblock%}
+
 {% block 'conteudo' %}
 
-dashbord
+<h1 class="mt-3 mb-3">Olá, {{user.first_name}} {{user.last_name}}.</h1>
+
+{% include 'parciais/_messages.html' %}
+
+<p>Você está logado com o usuário: {{user}}</p>
+
+<a href="{% url 'logout' %}"><button type="submit" class="btn btn-primary">Sair</button></a>
 
 {% endblock %}
